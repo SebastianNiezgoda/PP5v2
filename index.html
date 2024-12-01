@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8">
+    <title>Strona SPA z Listą Klientów</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style/style.css">
+</head>
+<body>
+
+<section id="formSection">
+    <h3>Formularz</h3>
+    <form id="client-form" onsubmit="return save(event)" class="row g-4">
+        <input type="hidden" id="editIndex" value=""> <!-- Pole ukryte do przechowywania indeksu edytowanego klienta -->
+        <!-- Nazwa firmy -->
+        <div class="col-md-6">
+            <label for="inputName" class="form-label">Nazwa Firmy</label>
+            <input type="text" class="form-control" id="inputName" required>
+        </div>
+        <!-- NIP -->
+        <div class="col-md-6">
+            <label for="inputNIP" class="form-label">NIP</label>
+            <input type="text" class="form-control" pattern="\d{10}" title="NIP musi składać się z 10 cyfr" id="inputNIP" required>
+        </div>
+        <!-- Miasto -->
+        <div class="col-6">
+            <label for="inputMiasto" class="form-label">Miasto</label>
+            <input type="text" class="form-control" id="inputMiasto" placeholder="Kraków" required>
+        </div>
+        <!-- Ulica -->
+        <div class="col-6">
+            <label for="inputUlica" class="form-label">Ulica</label>
+            <input type="text" class="form-control" id="inputUlica" placeholder="Krakowska" required>
+        </div>
+        <!-- Numer domu -->
+        <div class="col-md-6">
+            <label for="inputNumber" class="form-label">Numer Domu</label>
+            <input type="text" class="form-control" id="inputNumber" required>
+        </div>
+        <!-- Numer mieszkania -->
+        <div class="col-md-6">
+            <label for="inputNumberM" class="form-label">Numer Mieszkania</label>
+            <input type="number" class="form-control" id="inputNumberM">
+        </div>
+        <!-- Kod pocztowy -->
+        <div class="col-md-6">
+            <label for="inputKod" class="form-label">Kod Pocztowy</label>
+            <input type="text" class="form-control" pattern="\d{2}-\d{3}" title="Kod pocztowy musi mieć format xx-xxx" id="inputKod" required>
+        </div>
+        <!-- Uwagi -->
+        <div class="col-md-12">
+            <label for="inputUwagi">Uwagi</label>
+            <textarea class="form-control" placeholder="Zostaw uwagi tutaj" id="inputUwagi"></textarea>
+        </div>
+        <!-- Branża -->
+        <div class="form-floating">
+            <select class="form-select" id="inputBranza" required>
+                <option value="" disabled selected>Wybierz branżę</option>
+                <option value="Finanse">Finanse</option>
+                <option value="Informatyka">Informatyka</option>
+                <option value="Motoryzacja">Motoryzacja</option>
+            </select>
+        </div>
+        <!-- Checkbox aktywny -->
+        <div class="col-12">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="inputCheck">
+                <label class="form-check-label" for="inputCheck">Aktywny</label>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-check">
+                <input type="hidden" id="editIndex" value="">
+            </div>
+        </div>
+        <!-- Przyciski -->
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Zapisz</button>
+            <button type="button" onclick="showList()" class="btn btn-secondary">Pokaż Listę</button>
+        </div>
+
+        <div class="col-12">
+            <button type="button" onclick="fillForm()" class="btn btn-secondary">Wstaw dane i zablokuj</button>
+        </div>
+
+        
+        
+    </form>
+</section>
+
+<section id="client-list" style="display: none;">
+    <h3>Lista Klientów</h3>
+    <ul class="list-group" id="customer-list"></ul>
+    <button type="button" class="btn btn-primary" onclick="showForm()">Dodaj Nowego Klienta</button>
+</section>
+
+<script>
+    let customersList = []; // Tablica przechowująca klientów
+
+    function resetForm() {
+        document.getElementById('client-form').reset();
+        document.getElementById("inputCheck").checked = false;
+        document.getElementById("editIndex").value = ""; // Reset ukrytego pola
+    }
+
+    function save(event) {
+        event.preventDefault();
+    
+        // Pobieranie danych z formularza
+        const newCustomer = {
+            name: document.getElementById("inputName").value,
+            nip: document.getElementById("inputNIP").value,
+            miasto: document.getElementById("inputMiasto").value,
+            ulica: document.getElementById("inputUlica").value,
+            number: document.getElementById("inputNumber").value,
+            numberM: document.getElementById("inputNumberM").value || null,
+            kod: document.getElementById("inputKod").value,
+            uwagi: document.getElementById("inputUwagi").value || null,
+            branza: document.getElementById("inputBranza").value,
+            check: document.getElementById("inputCheck").checked
+        };
+    
+        const editIndex = document.getElementById("editIndex").value;
+    
+        if (editIndex) {
+            // Aktualizacja istniejącego klienta
+            customersList[editIndex] = newCustomer;
+        } else {
+            // Dodanie nowego klienta
+            customersList.push(newCustomer);
+        }
+    
+        // Resetowanie formularza i wyświetlenie listy klientów
+        resetForm();
+        showCustomer();
+    }
+    
+
+    function showCustomer() {
+        const ul = document.getElementById("customer-list");
+        ul.innerHTML = ''; // Czyszczenie listy przed dodaniem klientów
+    
+        customersList.forEach((customer, index) => {
+            ul.innerHTML += `
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>Nazwa:</strong> ${customer.name}, <strong>NIP:</strong> ${customer.nip}, <strong>Miasto:</strong> ${customer.miasto}
+                    </div>
+                    <div>
+                        <button onclick="editClient(${index})" class="btn btn-sm btn-secondary mx-1">Edytuj</button>
+                        <button onclick="deleteClient(${index})" class="btn btn-sm btn-danger mx-1">Usuń</button>
+                    </div>
+                </li>
+            `;
+        });
+    
+        showList();
+    }
+    
+
+    function editClient(index) {
+        const client = customersList[index];
+    
+        // Wypełnianie formularza danymi klienta
+        document.getElementById("inputName").value = client.name;
+        document.getElementById("inputNIP").value = client.nip;
+        document.getElementById("inputMiasto").value = client.miasto;
+        document.getElementById("inputUlica").value = client.ulica;
+        document.getElementById("inputNumber").value = client.number;
+        document.getElementById("inputNumberM").value = client.numberM || '';
+        document.getElementById("inputKod").value = client.kod;
+        document.getElementById("inputUwagi").value = client.uwagi || '';
+        document.getElementById("inputBranza").value = client.branza;
+        document.getElementById("inputCheck").checked = client.check;
+    
+        // Zapamiętanie indeksu edytowanego klienta
+        document.getElementById("editIndex").value = index;
+    
+        // Wyświetlenie formularza
+        showForm();
+    }
+    
+
+    function deleteClient(index) {
+        customersList.splice(index, 1); // Usunięcie klienta
+        showCustomer(); // Odświeżenie listy
+    }
+
+    function showList() {
+        document.getElementById('formSection').style.display = 'none';
+        document.getElementById('client-list').style.display = 'block';
+    }
+
+    function showForm() {
+        document.getElementById('formSection').style.display = 'block';
+        document.getElementById('client-list').style.display = 'none';
+    }
+
+    function fillForm() {
+        const testCustomer = {
+            name: "Testowa Firma",
+            nip: "1234567890",
+            miasto: "Warszawa",
+            ulica: "Testowa",
+            number: "10",
+            numberM: "5",
+            kod: "00-001",
+            uwagi: "Przykładowe uwagi",
+            branza: "Informatyka",
+            check: true
+        };
+    
+        // Wypełnianie formularza
+        document.getElementById("inputName").value = testCustomer.name;
+        document.getElementById("inputNIP").value = testCustomer.nip;
+        document.getElementById("inputMiasto").value = testCustomer.miasto;
+        document.getElementById("inputUlica").value = testCustomer.ulica;
+        document.getElementById("inputNumber").value = testCustomer.number;
+        document.getElementById("inputNumberM").value = testCustomer.numberM;
+        document.getElementById("inputKod").value = testCustomer.kod;
+        document.getElementById("inputUwagi").value = testCustomer.uwagi;
+        document.getElementById("inputBranza").value = testCustomer.branza;
+        document.getElementById("inputCheck").checked = testCustomer.check;
+    
+        // Blokowanie pól formularza
+        //document.querySelectorAll("#client-form input, #client-form textarea, #client-form select").forEach(input => {
+           // input.disabled = true;
+        //});
+    }
+    
+</script>
+</body>
+</html>
