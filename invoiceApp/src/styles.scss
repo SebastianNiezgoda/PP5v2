@@ -1,0 +1,8 @@
+$body-bg: rgb(82, 82, 82);
+$body-color: #ffffff;
+
+$primary: red;
+$danger: orange;
+/* npx sass style.scss style.css */
+
+@import '../node_modules/bootstrap/scss/bootstrap.scss'

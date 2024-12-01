@@ -1,0 +1,76 @@
+<form id="client-form" onsubmit="return save(event)" class="row g-4">
+    <input type="hidden" id="editIndex" value=""> <!-- Pole ukryte do przechowywania indeksu edytowanego klienta -->
+    <!-- Nazwa firmy -->
+    <div class="col-md-6">
+        <label for="inputName" class="form-label">Nazwa Firmy</label>
+        <input type="text" class="form-control" id="inputName" required>
+    </div>
+    <!-- NIP -->
+    <div class="col-md-6">
+        <label for="inputNIP" class="form-label">NIP</label>
+        <input type="text" class="form-control" pattern="\d{10}" title="NIP musi składać się z 10 cyfr" id="inputNIP" required>
+    </div>
+    <!-- Miasto -->
+    <div class="col-6">
+        <label for="inputMiasto" class="form-label">Miasto</label>
+        <input type="text" class="form-control" id="inputMiasto" placeholder="Kraków" required>
+    </div>
+    <!-- Ulica -->
+    <div class="col-6">
+        <label for="inputUlica" class="form-label">Ulica</label>
+        <input type="text" class="form-control" id="inputUlica" placeholder="Krakowska" required>
+    </div>
+    <!-- Numer domu -->
+    <div class="col-md-6">
+        <label for="inputNumber" class="form-label">Numer Domu</label>
+        <input type="text" class="form-control" id="inputNumber" required>
+    </div>
+    <!-- Numer mieszkania -->
+    <div class="col-md-6">
+        <label for="inputNumberM" class="form-label">Numer Mieszkania</label>
+        <input type="number" class="form-control" id="inputNumberM">
+    </div>
+    <!-- Kod pocztowy -->
+    <div class="col-md-6">
+        <label for="inputKod" class="form-label">Kod Pocztowy</label>
+        <input type="text" class="form-control" pattern="\d{2}-\d{3}" title="Kod pocztowy musi mieć format xx-xxx" id="inputKod" required>
+    </div>
+    <!-- Uwagi -->
+    <div class="col-md-12">
+        <label for="inputUwagi">Uwagi</label>
+        <textarea class="form-control" placeholder="Zostaw uwagi tutaj" id="inputUwagi"></textarea>
+    </div>
+    <!-- Branża -->
+    <div class="form-floating">
+        <select class="form-select" id="inputBranza" required>
+            <option value="" disabled selected>Wybierz branżę</option>
+            <option value="Finanse">Finanse</option>
+            <option value="Informatyka">Informatyka</option>
+            <option value="Motoryzacja">Motoryzacja</option>
+        </select>
+    </div>
+    <!-- Checkbox aktywny -->
+    <div class="col-12">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="inputCheck">
+            <label class="form-check-label" for="inputCheck">Aktywny</label>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="form-check">
+            <input type="hidden" id="editIndex" value="">
+        </div>
+    </div>
+    <!-- Przyciski -->
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Zapisz</button>
+        <button type="button" onclick="showList()" class="btn btn-secondary">Pokaż Listę</button>
+    </div>
+
+    <div class="col-12">
+        <button type="button" onclick="fillForm()" class="btn btn-secondary">Wstaw dane i zablokuj</button>
+    </div>
+
+    
+    
+</form>
